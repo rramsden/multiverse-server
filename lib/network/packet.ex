@@ -7,7 +7,7 @@ def header(opcode, size) do
     <<
     (@header_size + size) :: 16-unsigned-integer,
     @multiverse_flag :: size(16),
-    opcode
+    opcode :: size(16)
     >>
   end
 end
