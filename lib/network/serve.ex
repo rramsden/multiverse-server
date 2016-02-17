@@ -1,33 +1,24 @@
-defmodule SocketServe do
+defmodule Network.Serve do
   use GenServer
   require Logger
-
+ 
   def start_link(socket) do
     GenServer.start_link(__MODULE__, socket)
   end
 
   def init(socket) do
-    Process.flag(:trap_exit, true)
     send(self, :accept)
-    {:ok, %{socket: socket, object: {0,0,0}}}
+    {:ok, %{socket: socket}}
   end
-
-  def handle_call(_e, _from, state) do
-    # never need to handle a call
-    {:noreply, state}
-  end
-
-  def handle_info({:tcp, _socket, <<"M", x :: float, y :: float, z :: float>>}, state) do
-    Logger.info "Moving #{x},#{y},#{z}"
-    {:noreply, state}
-  end
-  def handle_info({:tcp, _socket, 'QUIT' ++ _}, state) do
-    :gen_tcp.close(state.socket)
-    {:stop, :normal, state}
-  end
+  
   def handle_info({:tcp, _socket, binary}, state) do
-    Logger.info "Unexpected Message: #{IO.inspect(binary)}"
-    :ok = :inet.setopts(state.socket, [:binary, active: true])
+    Logger.info "Received Packet"
+    case Network.Packet.handle(binary, state.socket) do
+      {:error, :nomatch} ->
+        Logger.info "Bad Packet"
+      {:match, reply} ->
+        Logger.info "Match"
+    end
     {:noreply, state}
   end
   def handle_info({:tcp_closed, socket}, state) do
@@ -36,17 +27,21 @@ defmodule SocketServe do
   end
   def handle_info(:accept, state) do
     {:ok, client} = :gen_tcp.accept(state.socket)
+    :ok = :inet.setopts(client, [:binary, packet: 0])
     {:ok, {ip_address, port}} = :inet.peername(client)
     Logger.info "New connection from #{inspect(ip_address)}"
-    :ok = :inet.setopts(client, [:binary, nodelay: true, active: true])
 
     # Start a new socket to replace this one
-    SocketSupervisor.start_socket()
+    Network.Supervisor.start_socket()
 
     {:noreply, Map.put(state, :socket, client)}
   end
   def handle_info(e, state) do
     Logger.info "Unexpected Message: #{inspect(e)}"
+    {:noreply, state}
+  end
+
+  def handle_call(_e, _from, state) do
     {:noreply, state}
   end
 
@@ -58,7 +53,7 @@ defmodule SocketServe do
     Logger.info("Unexpected Terminate Reason: #{reason}")
   end
 
-  defp line(str) do
-    String.strip(to_string(str))
+  def send_packet(socket, payload) do
+    :gen_tcp.send(socket, payload)
   end
 end
