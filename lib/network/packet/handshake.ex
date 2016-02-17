@@ -3,6 +3,8 @@ defmodule Network.Packet.Handshake do
   @opcode 0x0000
 
   def handle(packet, socket) do
+    version = Multiverse.Mixfile.project[:version]
+
     payload = <<
     (@header_size + 4) :: 16-unsigned-integer,
     0x5555 :: size(16),
