@@ -1,21 +1,24 @@
 defmodule Network.Packet.Handshake do
-  @header_size 6
+  import Packet
+
   @opcode 0x0000
 
   def handle(packet, socket) do
-    version = Multiverse.Mixfile.project[:version]
+    version = Multiverse.version
+    success = 1
 
-    payload = <<
-    (@header_size + 4) :: 16-unsigned-integer,
-    0x5555 :: size(16),
-    @opcode :: size(16),
-    0 :: size(8), # success
-    0 :: integer, # major
-    0 :: integer, # minor
-    1 :: integer  # micro
-    >>
+    payload = [
+      header(@opcode, 4),
+      <<
+      # success
+      success :: size(8),
 
-    # TODO: Check Protocol Version 
+      # protocol version
+      version[:major] :: integer,
+      version[:minor] :: integer,
+      version[:patch] :: integer
+      >>
+    ]
 
     Network.Serve.send_packet(socket, payload)
     {:match, :ok}

@@ -1,7 +1,7 @@
 defmodule Network.Serve do
   use GenServer
   require Logger
- 
+
   def start_link(socket) do
     GenServer.start_link(__MODULE__, socket)
   end
@@ -10,10 +10,10 @@ defmodule Network.Serve do
     send(self, :accept)
     {:ok, %{socket: socket}}
   end
-  
+
   def handle_info({:tcp, _socket, binary}, state) do
     Logger.info "Received Packet"
-    case Network.Packet.handle(binary, state.socket) do
+    case Network.PacketHandler.handle(binary, state.socket) do
       {:error, :nomatch} ->
         Logger.info "Bad Packet"
       {:match, reply} ->
