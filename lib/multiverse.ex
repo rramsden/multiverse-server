@@ -6,7 +6,8 @@ defmodule Multiverse do
   end
 
   def version do
-    [{major, _}, {minor, _}, {patch, _}] = Enum.map(String.split("0.0.1", "."), &Integer.parse/1)
+    project_version = Multiverse.Mixfile.project[:version]
+    [{major, _}, {minor, _}, {patch, _}] = Enum.map(String.split(project_version, "."), &Integer.parse/1)
     %{major: major, minor: minor, patch: patch}
   end
 end
