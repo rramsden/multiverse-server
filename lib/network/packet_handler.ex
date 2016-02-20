@@ -3,7 +3,8 @@ defmodule Network.PacketHandler do
 
   @opcodes %{
     0x0000 => Network.Packet.Handshake,
-    0x0001 => Network.Packet.Disconnect
+    0x0001 => Network.Packet.Disconnect,
+    0x000A => Network.Packet.PlayerMove
   }
 
   def handle(<<_ :: size(16), 0x5555 :: size(16), opcode :: size(16), _ :: binary>> = packet, socket) do
