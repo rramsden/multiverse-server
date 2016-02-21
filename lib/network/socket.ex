@@ -1,4 +1,4 @@
-defmodule Network.Serve do
+defmodule Network.Socket do
   use GenServer
   require Logger
 
@@ -34,7 +34,10 @@ defmodule Network.Serve do
     # Start a new socket to replace this one
     Network.Supervisor.start_socket()
 
-    {:noreply, Map.put(state, :socket, client)}
+    # Start a Player Process
+    {:ok, player} = Player.start_link
+
+    {:noreply, %{socket: client, player: player}}
   end
   def handle_info(e, state) do
     Logger.info "Unexpected Message: #{inspect(e)}"

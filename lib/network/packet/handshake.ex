@@ -17,7 +17,7 @@ defmodule Network.Packet.Handshake do
                           })
 
     # Send response back to client
-    Network.Serve.send_packet(socket, payload)
+    Network.Socket.send_packet(socket, payload)
 
     {:match, :ok}
   end

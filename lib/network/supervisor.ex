@@ -1,7 +1,7 @@
 defmodule Network.Supervisor do
   use Supervisor
   require Logger
-  
+
   @name Network.Supervisor
 
   def start_link do
@@ -15,7 +15,7 @@ defmodule Network.Supervisor do
     spawn_link(&empty_listeners/0)
 
     children = [
-      worker(Network.Serve, [listen], restart: :temporary)
+      worker(Network.Socket, [listen], restart: :temporary)
     ]
 
     supervise(children, strategy: :simple_one_for_one)
