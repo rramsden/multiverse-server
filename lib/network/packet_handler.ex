@@ -7,7 +7,7 @@ defmodule Network.PacketHandler do
     0x000A => Network.Packet.PlayerMove
   }
 
-  def handle(<<_ :: size(16), 0x5555 :: size(16), opcode :: size(16), _ :: binary>> = packet, socket) do
+  def handle(<<_ :: size(16), opcode :: size(16), _ :: binary>> = packet, socket) do
     case @opcodes[opcode] do
       nil ->
         {:error, :nomatch}
