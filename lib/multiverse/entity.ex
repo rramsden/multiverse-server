@@ -57,6 +57,14 @@ defmodule Multiverse.Entity do
     end)
   end
 
+  # UTILITY
+
+  @doc """
+  Retrieves module name from entity
+  """
+  @spec get_module(entity()) :: module()
+  def get_module({module, _, _}), do: module
+
   # CALLBACK API
 
   def get(entity, key) do

@@ -24,4 +24,9 @@ defmodule MultiverseEntityTest do
 
     assert "value" == Entity.base_get(entity, :key)
   end
+
+  test "get_module", context do
+    {:ok, entity} = Entity.init(context[:module], %{key: "value"})
+    assert context[:module] == Entity.get_module(entity)
+  end
 end
