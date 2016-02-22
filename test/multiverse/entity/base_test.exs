@@ -1,6 +1,6 @@
-defmodule MultiverseEntityTest do
+defmodule MultiverseEntityBaseTest do
   use ExUnit.Case
-  alias Multiverse.Entity, as: Entity
+  alias Multiverse.Entity.Base, as: Entity
 
   setup do
     module = Multiverse

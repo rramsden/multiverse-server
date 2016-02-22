@@ -1,4 +1,4 @@
-defmodule Multiverse.Entity do
+defmodule Multiverse.Entity.Base do
   require Logger
 
   @moduledoc """
