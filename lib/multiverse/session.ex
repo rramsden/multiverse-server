@@ -1,6 +1,7 @@
 defmodule Multiverse.Session do
   @behaviour Entity
   @behaviour Entity.Active
+  use ExActor.GenServer
 
   require Logger
   alias Multiverse.Entity, as: Entity
@@ -18,17 +19,17 @@ defmodule Multiverse.Session do
     {:ok, session}
   end
 
-  def not_auth({event, message}, state) do
+  def not_auth({event, message}, entity) do
     Logger.info "Received event #{event}"
-    new_state = Entity.base_set(state, %{auth: true})
-    {:reply, new_state, :auth, new_state}
+    next_state = Entity.base_set(entity, auth: true)
+    {:ok, :auth_ok}
   end
 
   # ENTITY CALLBACKS
 
   def start_active_trait(module, initial_state, entity) do
     Logger.info "Booting with #{initial_state}"
-    Entity.Active.start_active_trait(module, initial_state, entity)
+    Entity.Active.start_link(module, initial_state, entity)
   end
 
   def get(entity, key), do: Entity.base_get(entity, key)
