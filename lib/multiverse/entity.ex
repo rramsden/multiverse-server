@@ -19,7 +19,7 @@ defmodule Multiverse.Entity do
   def preinit(module) do
     entity = {module, :none, :none}
     table_name = ets_table_name(entity)
-    :ets.new(table_name, [:named_table, read_concurrency: true])
+    :ets.new(table_name, [:public, :named_table, read_concurrency: true])
     :ok
   end
 
@@ -50,13 +50,13 @@ defmodule Multiverse.Entity do
   Store %map% in ETS storage
   """
   def base_set(entity, map) do
-    Logger.info "Map #{inspect(map)}"
     table_name = ets_table_name(entity)
 
     Enum.each(map, fn {key,value} ->
       key = ets_key_name(entity, key)
       :ets.insert(table_name, {key, value})
     end)
+    entity
   end
 
   # UTILITY

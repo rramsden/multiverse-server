@@ -5,8 +5,8 @@ defmodule Multiverse do
     entities = [
       Multiverse.Session
     ]
-    game_config = %{entities: entities}
-    Multiverse.Service.start_link(game_config)
+    config = %{entities: entities}
+    Multiverse.Service.start_link(config)
   end
 
   def version do

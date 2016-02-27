@@ -31,11 +31,15 @@ defmodule Multiverse.Service do
   def start(config) do
     # Start multiverse supervisors
     {:ok, session_sup} = start_supervisor(Multiverse.SessionSupervisor)
-    {:ok, entity_sup} = start_supervisor(Multiverse.Entity.Supervisor)
+
+    # Start active entities root supervisor
+    {:ok, entity_active_root_sup} = start_supervisor(Multiverse.Entity.ActiveRootSupervisor)
+
+    # TODO: start subsupervisors for entities from state
 
     state = [
       {:session_sup, session_sup},
-      {:entity_sup, entity_sup}
+      {:entity_active_root_sup, entity_active_root_sup}
     ]
     save(state)
     :ok
@@ -49,6 +53,10 @@ defmodule Multiverse.Service do
   defp start_supervisor(module) do
     child_spec = supervisor(module, [], restart: :permanent, modules: :dynamic)
     Supervisor.start_child(__MODULE__, child_spec)
+  end
+
+  defp start_active_entities(root_pid, entities) do
+    Enum.each entities, &Multiverse.Entity.ActiveRootSupervisor.start_active_entity_sup(root_pid, &1)
   end
 
   defp preinit_entities(entities) do
