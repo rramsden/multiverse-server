@@ -28,6 +28,8 @@ defmodule Multiverse.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:message_pack, "~> 0.2.0"}]
+    [{:message_pack, "~> 0.2.0"},
+     {:exactor, "~> 2.2.0"},
+     {:fsm, "~> 0.2.0"}]
   end
 end

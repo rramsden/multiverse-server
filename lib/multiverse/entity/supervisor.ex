@@ -1,4 +1,4 @@
-defmodule Multiverse.SessionSupervisor do
+defmodule Multiverse.Entity.Supervisor do
   use Supervisor
 
   @name __MODULE__

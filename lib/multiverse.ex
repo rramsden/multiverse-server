@@ -2,7 +2,11 @@ defmodule Multiverse do
   use Application
 
   def start(_type, _args) do
-    Multiverse.Service.start_link
+    entities = [
+      Multiverse.Session
+    ]
+    game_config = %{entities: entities}
+    Multiverse.Service.start_link(game_config)
   end
 
   def version do

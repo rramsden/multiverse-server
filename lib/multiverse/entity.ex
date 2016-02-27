@@ -1,4 +1,4 @@
-defmodule Multiverse.Entity.Base do
+defmodule Multiverse.Entity do
   require Logger
 
   @moduledoc """
@@ -10,7 +10,7 @@ defmodule Multiverse.Entity.Base do
 
   @callback init(Module.t) :: {:ok, entity()}
   @callback get(entity(), tuple()) :: any()
-  @callback set(entity(), any(), any()) :: any()
+  @callback set(entity(), any()) :: any()
 
   @doc """
   Sets up an ETS table for this entity
@@ -50,7 +50,9 @@ defmodule Multiverse.Entity.Base do
   Store %map% in ETS storage
   """
   def base_set(entity, map) do
+    Logger.info "Map #{inspect(map)}"
     table_name = ets_table_name(entity)
+
     Enum.each(map, fn {key,value} ->
       key = ets_key_name(entity, key)
       :ets.insert(table_name, {key, value})
