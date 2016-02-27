@@ -87,6 +87,6 @@ defmodule Multiverse.Entity do
 
   defp ets_key_name(entity, key) do
     {module, ref, node} = entity
-    :erlang.binary_to_list(:erlang.term_to_binary(ref))
+    :erlang.binary_to_list(:erlang.term_to_binary(ref)) ++ key
   end
 end
